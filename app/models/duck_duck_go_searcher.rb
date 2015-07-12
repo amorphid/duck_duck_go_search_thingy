@@ -1,21 +1,23 @@
 class DuckDuckGoSearcher
-  attr_accessor :type
-  attr_reader :query
+  attr_reader :strategies,
+              :query
 
   def initialize(args)
-    @type = args[:type]
-    @query = args[:query]
+    @strategies = args[:strategies]
+    @query      = args[:query]
   end
 
-  def results
-    type.results
+
+  def result
+    @result || { infobox: {}, results: [], type: "" }
   end
 
   def search
-    type.get(query)
-  end
+    strategies.each do |klass|
+      strategy = klass.new
+      @result  = strategy.search(query)
 
-  def success?
-    type.success?
+      break if @result
+    end
   end
 end

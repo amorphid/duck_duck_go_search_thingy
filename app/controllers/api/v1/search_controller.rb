@@ -3,17 +3,16 @@ module Api
     class SearchController < ApplicationController
       def index
         searcher = DuckDuckGoSearcher.new(
-          type:  GetDdgSearchResultsViaApi.new,
+          strategies: [
+            GetDDGSearchResultsViaApi,
+            GetDDGSearchResultsViaCapybaraAndNokogiri
+          ],
           query: search_params[:q]
         )
+
         searcher.search
 
-        unless searcher.success?
-          searcher.type = GetDdgSearchResultsViaCapybaraAndNokogiri.new
-          searcher.search
-        end
-
-        render json: searcher.results
+        render json: searcher.result
       end
 
       private

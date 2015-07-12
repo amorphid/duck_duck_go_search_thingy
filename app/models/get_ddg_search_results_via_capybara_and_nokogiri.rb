@@ -1,7 +1,5 @@
-class GetDdgSearchResultsViaCapybaraAndNokogiri
-  attr_reader :results
-
-  def get(query)
+class GetDDGSearchResultsViaCapybaraAndNokogiri
+  def search(query)
     # we're using Capybara + Poltergeist to scrape the site
     require "capybara/poltergeist"
 
@@ -37,7 +35,7 @@ class GetDdgSearchResultsViaCapybaraAndNokogiri
     #   href title
     #   href url
     #   description
-    @results = results.map! do |result|
+    results.map! do |result|
       href_node    = result.css(".result__a")
       desc_node    = result.css(".result__snippet")
 
@@ -49,21 +47,11 @@ class GetDdgSearchResultsViaCapybaraAndNokogiri
 
       { href: href, description: description }
     end
+
+    {
+      infobox: [],
+      results: results,
+      type: ""
+    }
   end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
