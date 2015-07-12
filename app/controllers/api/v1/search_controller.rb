@@ -2,9 +2,9 @@ module Api
   module V1
     class SearchController < ApplicationController
       def index
-        search = DuckDuckGoSearcher.new(
+        searcher = DuckDuckGoSearcher.new(
           type:  GetDdgSearchResultsViaApi.new,
-          query: search_params[:query]
+          query: search_params[:q]
         )
         searcher.search
 
@@ -13,7 +13,13 @@ module Api
           searcher.search
         end
 
-        render json: search.results
+        render json: searcher.results
+      end
+
+      private
+
+      def search_params
+        params.permit(:q)
       end
     end
   end
