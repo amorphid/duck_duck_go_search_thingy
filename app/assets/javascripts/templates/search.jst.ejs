@@ -1,0 +1,27 @@
+<h1>Search Reults</h1>
+
+<% if (topic_summary) { %>
+  <img src='<%= topic_summary.image%>' />
+  <p>
+    <a href='<%= topic_summary.href.url %>'>
+      <%= topic_summary.href.url %>
+    </a>
+  <p/>
+  <p>
+    <%= topic_summary.description %>
+  </p>
+<% } %>
+
+<ul>
+  <% for (var i in results) { %>
+    <li>
+      <p class='search_item'>
+        <a href='<%= results[i].href.url %>'>
+          <%= results[i].href.title %>
+        </a>
+        <br >
+        <%= results[i].description %>
+      </p>
+    </li>
+  <% } %>
+</ul>

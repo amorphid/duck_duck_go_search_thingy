@@ -21,7 +21,7 @@ class GetDDGSearchResultsViaApi
 
   def contents_to_hash(contents)
     {
-      infobox: infobox(contents["Infobox"]),
+      topic_summary: topic_summary(contents),
       results: results(contents["RelatedTopics"]),
       type:    type(contents["Type"])
     }
@@ -54,8 +54,17 @@ class GetDDGSearchResultsViaApi
     node.attribute("href").value
   end
 
-  def infobox(infobox)
-    infobox.empty? ? {} : infobox
+  def topic_summary(topic_summary)
+    return {} if topic_summary.empty?
+
+    {
+      description: topic_summary["AbstractText"],
+      href: {
+        title: topic_summary["AbstractURL"],
+        url: topic_summary["Heading"]
+      },
+      image: topic_summary["Image"]
+    }
   end
 
   def results(contents)

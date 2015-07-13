@@ -1,6 +1,16 @@
 <h1>DuckDuckGo Search Thingy</h1>
 
-<%= form_for api_v1_search_path, method: :get, remote: true do |f| %>
-  <%= f.text_field :q %>
-  <%= f.submit "Search" %>
+<%= form_tag api_v1_search_path, id: "search", method: :get, remote: true do %>
+  <%= text_field_tag :q %>
+  <%= submit_tag "Search" %>
 <% end %>
+
+<div id="contents"></div>
+
+<script>
+  $(function () {
+    $("#search").on("ajax:success", function (e, data, status, xhr) {
+      $("#contents").html(JST["templates/search"](data));
+    });
+  })
+</script>
