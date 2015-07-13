@@ -1,57 +1,110 @@
+require "capybara/poltergeist"
+
 class GetDDGSearchResultsViaCapybaraAndNokogiri
+
+  public
+
+  def initialize
+    initialize_capybara
+  end
+
   def search(query)
-    # we're using Capybara + Poltergeist to scrape the site
-    require "capybara/poltergeist"
-
-    # enable Capybara to scrape page with JavaScript
-    Capybara.default_driver = :poltergeist
-
-    # visit the DuckDuckGo site
-    Capybara.visit "https://www.duckduckgo.com"
-
-    # fill in a search query
-    Capybara.fill_in :search_form_input_homepage, with: query
-
-    # submit the query (reponse stored in Capybara.page)
-    Capybara.find("#search_button_homepage").click
-
-    # parse the html repsonse into a Nokogiri tree
-    parsed_body = Nokogiri::HTML(Capybara.page.body)
-
-    # aggreate results
-    #   select non-ads nodes
-    #   select nodes w/ valid urls
-    results = parsed_body.css(".result").select do |result|
-      # non-ad node is missing the .badge--ad
-      # we're looking for an empty array, indicating no .badge--ad node
-      result.css(".badge--ad").pop.nil? &&
-
-      # node w/ valid url has the .result__a class
-      # we're looking for a node within the array
-      result.css(".result__a").pop
-    end
-
-    # turn each result into a hash containing:
-    #   href title
-    #   href url
-    #   description
-    results.map! do |result|
-      href_node    = result.css(".result__a")
-      desc_node    = result.css(".result__snippet")
-
-      href         = {}
-      href[:title] = href_node.children.map { |c| c.text.strip }.join(" ")
-      href[:url]   = href_node.attribute("href").text
-
-      description  = desc_node.children.map { |c| c.text }.join(" ")
-
-      { href: href, description: description }
-    end
-
     {
-      infobox: [],
-      results: results,
-      type: ""
+      infobox: infobox,
+      results: results(query),
+      type: type
     }
+  end
+
+  private
+
+  def content_node(node)
+    node.css(".result__a")
+  end
+
+  def description(node)
+    node.children.map { |c| c.text }.join(" ")
+  end
+
+  def description_node(node)
+    node.css(".result__snippet")
+  end
+
+  def fetch_body(query)
+    Capybara.visit "https://www.duckduckgo.com"
+    Capybara.fill_in :search_form_input_homepage, with: query
+    Capybara.find("#search_button_homepage").click
+    Capybara.page.body
+  end
+
+  def format_results(nodes)
+    nodes.map! do |node|
+      {
+        href:        href(content_node(node)),
+        description: description(description_node(node))
+      }
+    end
+  end
+
+  def href(node)
+    {
+      title: href_title(node),
+      url:   href_url(node)
+    }
+  end
+
+  def href_title(node)
+    node.children.map { |c| c.text.strip }.join(" ")
+  end
+
+  def href_url(node)
+    node.attribute("href").text
+  end
+
+  def infobox
+    []
+  end
+
+  def initialize_capybara
+    Capybara.default_driver = :poltergeist
+  end
+
+  def node_is_ad?(node)
+    !node.css(".badge--ad").empty?
+  end
+
+  def node_is_content?(node)
+    !node.css(".result__a").empty?
+  end
+
+  def nodes(document)
+    document.css(".result")
+  end
+
+  def parse_body(body)
+    Nokogiri::HTML(body)
+  end
+
+  def select_contents(nodes)
+    nodes.select { |node| node_is_content?(node) }
+  end
+
+  def reject_ads(nodes)
+    nodes.reject { |node| node_is_ad?(node) }
+  end
+
+  def results(query)
+    format_results(
+      select_contents(
+        reject_ads(
+          nodes(
+            parse_body(
+              fetch_body(
+                query
+              ))))))
+  end
+
+  def type
+    ""
   end
 end
