@@ -1,0 +1,6 @@
+<h1>DuckDuckGo Search Thingy</h1>
+
+<%= form_for api_v1_search_path, method: :get, remote: true do |f| %>
+  <%= f.text_field :q %>
+  <%= f.submit "Search" %>
+<% end %>
