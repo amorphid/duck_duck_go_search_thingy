@@ -1,16 +1,29 @@
-<h1>DuckDuckGo Search Thingy</h1>
 
-<%= form_tag api_v1_search_path, id: "search", method: :get, remote: true do %>
-  <%= text_field_tag :q %>
-  <%= submit_tag "Search" %>
+<h1 class='text-center'>
+  DuckDuckGo Search Thingy
+</h1>
+
+<%= form_tag api_v1_search_path, id: 'search', method: :get, remote: true do %>
+  <div class='row'>
+    <div class='col-md-2'></div>
+    <div class='col-md-6'>
+      <%= text_field_tag :q, nil, class: "form-control" %>
+    </div>
+    <div class='col-md-2'>
+      <%= submit_tag 'Search', class: 'btn btn-block btn-primary' %>
+    </div>
+    <div class='col-md-2'></div>
+  </div>
 <% end %>
 
-<div id="contents"></div>
+<div id='contents'></div>
+
+
 
 <script>
   $(function () {
-    $("#search").on("ajax:success", function (e, data, status, xhr) {
-      $("#contents").html(JST["templates/search"](data));
+    $('#search').on('ajax:success', function (e, data, status, xhr) {
+      $('#contents').html(JST['templates/search'](data));
     });
   })
 </script>

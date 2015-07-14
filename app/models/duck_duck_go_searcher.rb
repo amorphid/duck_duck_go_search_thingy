@@ -1,23 +1,20 @@
 class DuckDuckGoSearcher
-  attr_reader :strategies,
-              :query
-
-  def initialize(args)
-    @strategies = args[:strategies]
-    @query      = args[:query]
+  def fetch_results(query)
+    GetDDGSearchResultsViaCapybaraAndNokogiri.new.search(query)
   end
 
-
-  def result
-    @result || { infobox: {}, results: [], type: "" }
+  def results(json)
+    json[:results]
   end
 
-  def search
-    strategies.each do |klass|
-      strategy = klass.new
-      @result  = strategy.search(query)
+  def search(query)
+    {
+      topic_summary: topic_summary(query),
+      results:       results(fetch_results(query))
+    }
+  end
 
-      break if @result
-    end
+  def topic_summary(query)
+    GetDDGTopicSummaryViaApi.new.search(query)
   end
 end

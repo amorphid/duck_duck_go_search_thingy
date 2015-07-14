@@ -9,11 +9,7 @@ class GetDDGSearchResultsViaCapybaraAndNokogiri
   end
 
   def search(query)
-    {
-      infobox: infobox,
-      results: results(query),
-      type: type
-    }
+    { results: results(query) }
   end
 
   private
@@ -59,10 +55,6 @@ class GetDDGSearchResultsViaCapybaraAndNokogiri
 
   def href_url(node)
     node.attribute("href").text
-  end
-
-  def infobox
-    []
   end
 
   def initialize_capybara

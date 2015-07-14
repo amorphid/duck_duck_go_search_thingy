@@ -1,27 +1,57 @@
-<h1>Search Reults</h1>
-
-<% if (topic_summary) { %>
-  <img src='<%= topic_summary.image%>' />
-  <p>
-    <a href='<%= topic_summary.href.url %>'>
-      <%= topic_summary.href.url %>
-    </a>
-  <p/>
-  <p>
-    <%= topic_summary.description %>
-  </p>
-<% } %>
-
-<ul>
-  <% for (var i in results) { %>
-    <li>
-      <p class='search_item'>
-        <a href='<%= results[i].href.url %>'>
-          <%= results[i].href.title %>
-        </a>
-        <br >
-        <%= results[i].description %>
-      </p>
-    </li>
+<br />
+<% if (results.length > 0) { %>
+  <% if (topic_summary) { %>
+    <p>
+      <div class='row'>
+        <div class='col-md-2'></div>
+        <div class='col-md-8'>
+          <div class='row well'>
+            <div class='col-md-3'>
+              <img src='<%= topic_summary.image%>' class='img-responsive' />
+            </div>
+            <div class='col-md-9'>
+              <p>
+                <a href='<%= topic_summary.href.url %>'>
+                  <%= topic_summary.href.url %>
+                </a>
+              <p/>
+              <p>
+                <%= topic_summary.description %>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class='col-md-2'></div>
+      </div>
+    </p>
   <% } %>
-</ul>
+
+  <div class='row'>
+    <div class='col-md-2'></div>
+    <div class='col-md-8'>
+      <% for (var i in results) { %>
+        <p class='search_item'>
+          <a href='<%= results[i].href.url %>'>
+            <%= results[i].href.title %>
+          </a>
+          <% if (results[i].description) { %>
+            <br />
+            <%= results[i].description %>
+          <% } %>
+
+          <br />
+          <a href='<%= results[i].href.url %>'>
+            <%= results[i].href.url %>
+          </a>
+        </p>
+      <% } %>
+    </div>
+    <div class='col-md-2'></div>
+  </div>
+<% } else { %>
+  <div class='row'>
+    <div class='col-md-2'>
+      <p>No results found :P</p>
+    </div>
+  </div>
+<% } %>
