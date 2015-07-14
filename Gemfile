@@ -21,10 +21,5 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'pry-rails'
   gem 'spring'
-  gem 'sqlite3'
   gem 'web-console', '~> 2.0'
-end
-
-group :production do
-  gem 'pg'
 end
