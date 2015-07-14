@@ -1,5 +1,9 @@
 source 'https://rubygems.org'
 
+source 'https://rails-assets.org' do
+  gem 'rails-assets-bootstrap-sass'
+end
+
 gem 'capybara'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'ejs'
