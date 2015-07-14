@@ -5,6 +5,7 @@ class GetDDGTopicSummaryViaApi
   public
 
   def search(query)
+    return "" if query.blank?
     summary_as_json = fetch_summary(uri(query))
     return "" unless summary?(summary_as_json["Type"])
     summary_to_hash(summary_as_json)
